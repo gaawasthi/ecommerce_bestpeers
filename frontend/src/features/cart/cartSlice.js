@@ -77,19 +77,21 @@ export const emptyCart = createAsyncThunk(
   'cart/emptyCart',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.put(`${baseUrl}/api/cart/empty`, {
-        withCredentials: true,
-      
-      });
+      const res = await axios.put(
+        `${baseUrl}/api/cart/empty`,
+        {},
+        { withCredentials: true }
+      );
 
-        return res.data.cart
+      return res.data.cart;
     } catch (error) {
       return rejectWithValue(
-        err.response?.data?.message || 'failed to remove item'
+        error.response?.data?.message || 'Failed to empty cart'
       );
     }
   }
 );
+
 const initialState = {
   cart: null,
   loading: false,
