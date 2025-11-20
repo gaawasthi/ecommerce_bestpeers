@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
+ const baseUrl = import.meta.env.VITE_API_URL
 export const addToCart = createAsyncThunk(
   'cart/addToCart',
   async ({ productId, quantity = 1 }, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        '/api/cart/add',
+        `${baseUrl}/api/cart/add`,
         { productId, quantity },
         { withCredentials: true }
       );
@@ -23,7 +23,7 @@ export const getCart = createAsyncThunk(
   'cart/getCart',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get('/api/cart', { withCredentials: true });
+      const res = await axios.get(`${baseUrl}/api/cart`, { withCredentials: true });
 
       return res.data.cart;
     } catch (err) {
@@ -39,7 +39,7 @@ export const updateCartItem = createAsyncThunk(
   async ({ productId, quantity }, { rejectWithValue }) => {
     try {
       const res = await axios.put(
-        '/api/cart/update',
+        `${baseUrl}/api/cart/update`,
         { productId, quantity },
         { withCredentials: true }
       );
@@ -56,7 +56,7 @@ export const removeCartItem = createAsyncThunk(
   'cart/removeCartItem',
   async (productId, { rejectWithValue }) => {
     try {
-      const res = await axios.delete(`/api/cart/remove/${productId}`, {
+      const res = await axios.delete(`${baseUrl}/api/cart/remove/${productId}`, {
         withCredentials: true,
       });
       return res.data.cart;
@@ -72,7 +72,7 @@ export const emptyCart = createAsyncThunk(
   'cart/emptyCart',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.put(`/api/cart/empty`);
+      const res = await axios.put(`${baseUrl}/api/cart/empty`);
     } catch (error) {
       return rejectWithValue(
         err.response?.data?.message || 'failed to remove item'

@@ -3,6 +3,9 @@ import axios from 'axios';
 
 const user = JSON.parse(localStorage.getItem('user'));
 
+ const baseUrl = import.meta.env.VITE_API_URL
+
+
 const initialState = {
   user: user || null,
 
@@ -17,7 +20,7 @@ export const register = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post('/api/users/register', userData);
+      const res = await axios.post(`${baseUrl}/api/users/register`, userData);
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -29,7 +32,7 @@ export const resendOtp = createAsyncThunk(
   'auth/resendOtp',
   async ({ email }, { rejectWithValue }) => {
     try {
-      const res = await axios.post('/api/users/resendOtp', { email });
+      const res = await axios.post(`${baseUrl}/api/users/resendOtp`, { email });
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -41,7 +44,7 @@ export const verify = createAsyncThunk(
   'auth/verify',
   async ({ email, otp }, { rejectWithValue }) => {
     try {
-      const res = await axios.post('/api/users/verify', { email, otp });
+      const res = await axios.post(`${baseUrl}/api/users/verify`, { email, otp });
 
       if (res.data) localStorage.setItem('user', JSON.stringify(res.data));
 
@@ -56,7 +59,7 @@ export const login = createAsyncThunk(
   'auth/login',
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post('/api/users/login', userData);
+      const res = await axios.post(`${baseUrl}/api/users/login`, userData);
 
       if (res.data) localStorage.setItem('user', JSON.stringify(res.data));
 
@@ -71,7 +74,7 @@ export const logoutApi = createAsyncThunk(
   'auth/logoutApi',
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post('/api/users/logout', {}, { withCredentials: true });
+      await axios.post(`${baseUrl}/api/users/logout`, {}, { withCredentials: true });
 
       localStorage.removeItem('user');
 
@@ -92,7 +95,7 @@ export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post('/api/users/reset', userData);
+      const res = await axios.post(`${baseUrl}/api/users/reset`, userData);
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -104,7 +107,7 @@ export const resetPasswordVerify = createAsyncThunk(
   'auth/resetPasswordVerify',
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post('/api/users/reset/password', userData);
+      const res = await axios.post(`${baseUrl}/api/users/reset/password`, userData);
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -116,7 +119,7 @@ export const changePassword = createAsyncThunk(
   'auth/changePassword',
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post('/api/users/password/change', userData);
+      const res = await axios.post(`${baseUrl}/api/users/password/change`, userData);
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -128,7 +131,7 @@ export const userInfo = createAsyncThunk(
   'auth/userInfo',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get('/api/users/me');
+      const res = await axios.get(`${baseUrl}/api/users/me`);
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -141,7 +144,7 @@ export const updateUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const { id, ...body } = userData;
-      const res = await axios.put(`/api/users/${id}`, body);
+      const res = await axios.put(`${baseUrl}/api/users/${id}`, body);
 
       if (res.data) localStorage.setItem('user', JSON.stringify(res.data));
       console.log(res);
