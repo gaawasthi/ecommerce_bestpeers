@@ -72,7 +72,7 @@ export const emptyCart = createAsyncThunk(
   'cart/emptyCart',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.put(`${baseUrl}/api/cart/empty`);
+      const res = await axios.put(`${baseUrl}/api/cart/empty`)
     } catch (error) {
       return rejectWithValue(
         err.response?.data?.message || 'failed to remove item'
