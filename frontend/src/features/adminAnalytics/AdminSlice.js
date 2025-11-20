@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
- const baseUrl = import.meta.env.VITE_API_URL
+const baseUrl = import.meta.env.VITE_API_URL;
 const getErrorMessage = (error) => {
   return (
     error?.response?.data?.message || error?.message || 'something went wrong'
@@ -12,12 +12,12 @@ export const getTotalRevenue = createAsyncThunk(
   'admin/getTotalRevenue',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/dashboard/admin/total`);
+      const res = await axios.get(`${baseUrl}/api/dashboard/admin/total`, {
+        withCredentials: true,
+      });
       console.log(res.data);
-        
+
       return res.data.totalRevenue;
-        
-        
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
     }
@@ -30,11 +30,14 @@ export const adminCreateSeller = createAsyncThunk(
   'auth/adminCreateSeller',
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${baseUrl}/api/users/create/seller`, userData);
+      const res = await axios.post(
+        `${baseUrl}/api/users/create/seller`,
+        userData,
+        { withCredentials: true }
+      );
       return res.data.newUser;
     } catch (error) {
       return rejectWithValue(getErrorMessage(err));
-
     }
   }
 );
@@ -42,7 +45,9 @@ export const lastWeek = createAsyncThunk(
   'admin/lastWeek',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/dashboard/admin/week`);
+      const res = await axios.get(`${baseUrl}/api/dashboard/admin/week`, {
+        withCredentials: true,
+      });
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -54,7 +59,10 @@ export const topCustomers = createAsyncThunk(
   'admin/topCustomers',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/dashboard/admin/customer/top`);
+      const res = await axios.get(
+        `${baseUrl}/api/dashboard/admin/customer/top`,
+        { withCredentials: true }
+      );
       return res.data.topCustomers;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -66,10 +74,13 @@ export const topProducts = createAsyncThunk(
   'admin/topProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/dashboard/admin/product/top`);
+      const res = await axios.get(
+        `${baseUrl}/api/dashboard/admin/product/top`,
+        { withCredentials: true }
+      );
       // console.log(res.data.topProducts);
-      
-      return res.data.topProducts
+
+      return res.data.topProducts;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
     }
@@ -80,7 +91,9 @@ export const topSellers = createAsyncThunk(
   'admin/topSellers',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/dashboard/admin/seller/top`);
+      const res = await axios.get(`${baseUrl}/api/dashboard/admin/seller/top`, {
+        withCredentials: true,
+      });
       return res.data.topSellers;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -88,12 +101,13 @@ export const topSellers = createAsyncThunk(
   }
 );
 
-
 export const allUsers = createAsyncThunk(
   'admin/users',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/users`);
+      const res = await axios.get(`${baseUrl}/api/users`, {
+        withCredentials: true,
+      });
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -101,12 +115,13 @@ export const allUsers = createAsyncThunk(
   }
 );
 
-
 export const singleUser = createAsyncThunk(
   'admin/singleUser',
   async (id, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/users/${id}`);
+      const res = await axios.get(`${baseUrl}/api/users/${id}`, {
+        withCredentials: true,
+      });
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -117,7 +132,9 @@ export const deleteUser = createAsyncThunk(
   'admin/deleteUser',
   async (id, { rejectWithValue }) => {
     try {
-      const res = await axios.delete(`${baseUrl}/api/users/${id}`);
+      const res = await axios.delete(`${baseUrl}/api/users/${id}`, {
+        withCredentials: true,
+      });
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -137,7 +154,7 @@ const adminSlice = createSlice({
     sellersData: [],
     isLoading: false,
     error: null,
-      newSeller : null ,
+    newSeller: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -244,20 +261,20 @@ const adminSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-         
+
       .addCase(adminCreateSeller.pending, (state) => {
         state.isLoading = true;
         state.error = false;
       })
       .addCase(adminCreateSeller.fulfilled, (state, action) => {
         state.isLoading = false;
-        action.newSeller = action.payload
-        state.users.push(action.payload)
+        action.newSeller = action.payload;
+        state.users.push(action.payload);
       })
       .addCase(adminCreateSeller.rejected, (state) => {
         state.isLoading = false;
         state.error = true;
-      })
+      });
   },
 });
 

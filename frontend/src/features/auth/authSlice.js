@@ -20,7 +20,7 @@ export const register = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${baseUrl}/api/users/register`, userData);
+      const res = await axios.post(`${baseUrl}/api/users/register`, userData , { withCredentials: true });
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -32,7 +32,7 @@ export const resendOtp = createAsyncThunk(
   'auth/resendOtp',
   async ({ email }, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${baseUrl}/api/users/resendOtp`, { email });
+      const res = await axios.post(`${baseUrl}/api/users/resendOtp`, { email } , { withCredentials: true });
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -44,7 +44,7 @@ export const verify = createAsyncThunk(
   'auth/verify',
   async ({ email, otp }, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${baseUrl}/api/users/verify`, { email, otp });
+      const res = await axios.post(`${baseUrl}/api/users/verify`, { email, otp } ,{ withCredentials: true });
 
       if (res.data) localStorage.setItem('user', JSON.stringify(res.data));
 
@@ -95,7 +95,7 @@ export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${baseUrl}/api/users/reset`, userData);
+      const res = await axios.post(`${baseUrl}/api/users/reset`, userData , { withCredentials: true });
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -107,7 +107,7 @@ export const resetPasswordVerify = createAsyncThunk(
   'auth/resetPasswordVerify',
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${baseUrl}/api/users/reset/password`, userData);
+      const res = await axios.post(`${baseUrl}/api/users/reset/password`, userData , { withCredentials: true });
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -119,7 +119,7 @@ export const changePassword = createAsyncThunk(
   'auth/changePassword',
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${baseUrl}/api/users/password/change`, userData);
+      const res = await axios.post(`${baseUrl}/api/users/password/change`, userData ,{ withCredentials: true });
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -131,7 +131,7 @@ export const userInfo = createAsyncThunk(
   'auth/userInfo',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/users/me`);
+      const res = await axios.get(`${baseUrl}/api/users/me` , { withCredentials: true });
       return res.data;
     } catch (err) {
       return rejectWithValue(getErrorMessage(err));
@@ -144,7 +144,7 @@ export const updateUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const { id, ...body } = userData;
-      const res = await axios.put(`${baseUrl}/api/users/${id}`, body);
+      const res = await axios.put(`${baseUrl}/api/users/${id}`, body ,{ withCredentials: true } );
 
       if (res.data) localStorage.setItem('user', JSON.stringify(res.data));
       console.log(res);

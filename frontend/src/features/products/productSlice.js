@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-
-const baseUrl = import.meta.env.VITE_API_URL
+const baseUrl = import.meta.env.VITE_API_URL;
 
 const getErrorMessage = (error) =>
   error?.response?.data?.message || error.message || 'Error';
@@ -11,9 +10,13 @@ export const getAllProducts = createAsyncThunk(
   'products/getAllProducts',
   async (filters = {}, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/products`, {
-        params: filters,   
-      });
+      const res = await axios.get(
+        `${baseUrl}/api/products`,
+        {
+          params: filters,
+        },
+        { withCredentials: true }
+      );
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -24,7 +27,10 @@ export const searched = createAsyncThunk(
   'products/searched',
   async (query, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/products/search?query=${query}`);
+      const res = await axios.get(
+        `${baseUrl}/api/products/search?query=${query}`,
+        { withCredentials: true }
+      );
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -32,14 +38,17 @@ export const searched = createAsyncThunk(
   }
 );
 
-
 export const getFashionProducts = createAsyncThunk(
   'products/getFashionProducts',
   async (filters = {}, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/products`, {
-        params: filters,   
-      });
+      const res = await axios.get(
+        `${baseUrl}/api/products`,
+        {
+          params: filters,
+        },
+        { withCredentials: true }
+      );
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -50,9 +59,13 @@ export const getElectronicsProducts = createAsyncThunk(
   'products/getElectronicsProducts',
   async (filters = {}, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/products`, {
-        params: filters,   
-      });
+      const res = await axios.get(
+        `${baseUrl}/api/products`,
+        {
+          params: filters,
+        },
+        { withCredentials: true }
+      );
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -63,9 +76,13 @@ export const getSports = createAsyncThunk(
   'products/getSports',
   async (filters = {}, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/products`, {
-        params: filters,   
-      });
+      const res = await axios.get(
+        `${baseUrl}/api/products`,
+        {
+          params: filters,
+        },
+        { withCredentials: true }
+      );
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -77,7 +94,9 @@ export const getMyProducts = createAsyncThunk(
   'products/getMyProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/products/my/products`);
+      const res = await axios.get(`${baseUrl}/api/products/my/products`, {
+        withCredentials: true,
+      });
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -89,7 +108,9 @@ export const getSingleProduct = createAsyncThunk(
   'products/getSingleProduct',
   async (id, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/products/${id}`);
+      const res = await axios.get(`${baseUrl}/api/products/${id}`, {
+        withCredentials: true,
+      });
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -104,32 +125,39 @@ export const addProduct = createAsyncThunk(
       const formData = new FormData();
 
       Object.entries(productData).forEach(([key, value]) => {
-        if (key === "images") {
-          value.forEach((file) => formData.append("images", file));
+        if (key === 'images') {
+          value.forEach((file) => formData.append('images', file));
         } else {
           formData.append(key, value);
         }
       });
 
-      const res = await axios.post(`${baseUrl}/api/products/create`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const res = await axios.post(
+        `${baseUrl}/api/products/create`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      });
-return res.data.product;   
-
+        { withCredentials: true }
+      );
+      return res.data.product;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
     }
   }
 );
 
-
 export const updateProduct = createAsyncThunk(
   'products/updateProduct',
   async ({ id, productData }, { rejectWithValue }) => {
     try {
-      const res = await axios.put(`${baseUrl}/api/products/${id}`, productData);
+      const res = await axios.put(
+        `${baseUrl}/api/products/${id}`,
+        productData,
+        { withCredentials: true }
+      );
       return res.data;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -141,7 +169,9 @@ export const deleteProduct = createAsyncThunk(
   'products/deleteProduct',
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`${baseUrl}/api/products/${id}`);
+      await axios.delete(`${baseUrl}/api/products/${id}`, {
+        withCredentials: true,
+      });
       return id;
     } catch (error) {
       return rejectWithValue(getErrorMessage(error));
@@ -151,10 +181,10 @@ export const deleteProduct = createAsyncThunk(
 
 const initialState = {
   products: [],
-  searchedProducts  : [],
-  electronics:[] , 
-  fashion : [] , 
-  sports:[],
+  searchedProducts: [],
+  electronics: [],
+  fashion: [],
+  sports: [],
   product: null,
   isLoading: false,
   error: null,
@@ -166,13 +196,10 @@ const initialState = {
 const productSlice = createSlice({
   name: 'product',
   initialState,
-  reducers: {
-   
- 
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-    
+
       .addCase(getAllProducts.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -195,7 +222,6 @@ const productSlice = createSlice({
       .addCase(searched.fulfilled, (state, action) => {
         state.isLoading = false;
         state.searchedProducts = action.payload.products;
-
       })
       .addCase(searched.rejected, (state, action) => {
         state.isLoading = false;
@@ -216,7 +242,7 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-   
+
       .addCase(getFashionProducts.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -232,7 +258,7 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-   
+
       .addCase(getSports.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -248,7 +274,7 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-   
+
       .addCase(getMyProducts.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -262,7 +288,6 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
 
-      
       .addCase(getSingleProduct.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -276,15 +301,13 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
 
- 
       .addCase(addProduct.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.isLoading = false;
-       state.products.push(action.payload);
-
+        state.products.push(action.payload);
       })
       .addCase(addProduct.rejected, (state, action) => {
         state.isLoading = false;
@@ -304,16 +327,13 @@ const productSlice = createSlice({
         state.error = action.payload;
       })
 
-      
       .addCase(deleteProduct.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.products = state.products.filter(
-          (p) => p._id !== action.payload
-        );
+        state.products = state.products.filter((p) => p._id !== action.payload);
       })
       .addCase(deleteProduct.rejected, (state, action) => {
         state.isLoading = false;

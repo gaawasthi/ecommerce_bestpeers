@@ -4,13 +4,15 @@
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-const baseUrl = import.meta.env.VITE_API_URL
+const baseUrl = import.meta.env.VITE_API_URL;
 export const getSellerTotalRevenue = createAsyncThunk(
   'seller/getSellerTotalRevenue',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/dashboard/seller/total`);
-      return res.data; 
+      const res = await axios.get(`${baseUrl}/api/dashboard/seller/total`, {
+        withCredentials: true,
+      });
+      return res.data;
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error.message || 'Error'
@@ -23,8 +25,10 @@ export const getlowStockProducts = createAsyncThunk(
   'seller/lowStockProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/dashboard/seller/low`);
-      return res.data.lowStockProducts; 
+      const res = await axios.get(`${baseUrl}/api/dashboard/seller/low`, {
+        withCredentials: true,
+      });
+      return res.data.lowStockProducts;
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error.message || 'Error'
@@ -37,7 +41,9 @@ export const getpendingOrders = createAsyncThunk(
   'seller/pendingOrders',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/dashboard/seller/pen`);
+      const res = await axios.get(`${baseUrl}/api/dashboard/seller/pen`, {
+        withCredentials: true,
+      });
       return res.data.pendingOrders;
     } catch (error) {
       return rejectWithValue(
@@ -51,8 +57,10 @@ export const getdeliverdOrders = createAsyncThunk(
   'seller/deliverdOrders',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${baseUrl}/api/dashboard/seller/del`);
-      return res.data.delivered; 
+      const res = await axios.get(`${baseUrl}/api/dashboard/seller/del`, {
+        withCredentials: true,
+      });
+      return res.data.delivered;
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error.message || 'Error'
@@ -76,7 +84,7 @@ const sellerSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-  
+
       .addCase(getSellerTotalRevenue.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -90,7 +98,6 @@ const sellerSlice = createSlice({
         state.error = action.payload;
       })
 
-   
       .addCase(getlowStockProducts.pending, (state) => {
         state.isLoading = true;
       })
