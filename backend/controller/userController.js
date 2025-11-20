@@ -30,44 +30,42 @@ export const addSeller = TryCatch(async (req, res) => {
 
 //
 export const signUp = TryCatch(async (req, res) => {
-  const userData = req.body; const { firstName, lastName, password, phone, role } = userData;
+  const userData = req.body;
+  const { firstName, lastName, password, phone, role, email } = userData;
 
-  const newUser = await User.create({
-    firstName,
-    lastName,
-    email,
-    password,
-    phone,
-    role,
-  });
-  const { email } = req.body;
-
+  // Step 1: Check if user already registered
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     return res.status(400).json({ message: 'User already registered' });
   }
 
+  // Step 2: Generate OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  await redisClient.set(`otp:${email}`, otp, { EX: 300 });
+
+  // Step 3: Store user data temporarily in Redis
+  await redisClient.set(`otp:${email}`, otp, { EX: 300 }); // 5 mins
   await redisClient.set(`pending:${email}`, JSON.stringify(userData), {
     EX: 300,
   });
 
+  // Step 4: Send OTP via email
   const subject = 'Verify your email - OTP for registration';
-  const html = `<div style="font-family: Arial; text-align: center;">
-    <h2>Welcome to MyApp!</h2>
-    <p>Your verification code is:</p>
-    <h1>${otp}</h1>
-    <p>This code expires in 5 minutes.</p>
-  </div>`;
+  const html = `
+    <div style="font-family: Arial; text-align: center;">
+      <h2>Welcome to MyApp!</h2>
+      <p>Your verification code is:</p>
+      <h1>${otp}</h1>
+      <p>This code expires in 5 minutes.</p>
+    </div>
+  `;
 
   await sendMail({ email, subject, html });
 
   res.status(200).json({
-    message:
-      'OTP sent successfully to your email. Please verify to complete registration.',
+    message: 'OTP sent successfully to your email. Verify OTP to complete registration.'
   });
 });
+
 
 // verity otp
 //http://localhost:8000/api/users/verify
