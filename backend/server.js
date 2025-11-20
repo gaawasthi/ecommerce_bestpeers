@@ -38,7 +38,22 @@ redisClient.connect().then(()=>{
     console.error('errorcartRoutes' ,error);
     
 })
-app.use(cors())
+app.use(
+    cors({
+        origin: [
+            "http://localhost:5173",
+            "https://ecommerce-bestpeers.vercel.app",
+            "https://ecommerce-bestpeers-git-best-gautams-projects-4ee7e3b0.vercel.app",
+            "https://ecommerce-bestpeers-5dy3prqee-gautams-projects-4ee7e3b0.vercel.app",
+            "https://ecommerce-bestpeers-gautams-projects-4ee7e3b0.vercel.app",
+        ], // Remove trailing slashes
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+        exposedHeaders: ["Set-Cookie"]
+
+    })
+);
 // express json middleware
 app.use(express.json());
 
