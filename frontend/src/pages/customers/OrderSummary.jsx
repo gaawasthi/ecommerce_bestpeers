@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearLastOrder } from '../../features/order/orderSlice';
 import confetti from 'canvas-confetti';
 
+
 const OrderSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -18,11 +19,13 @@ useEffect(() => {
     return;
   }
 
-
+ 
   const duration = 2000;
   const end = Date.now() + duration;
 
   (function frame() {
+    console.log('hellllllo');
+    
     confetti({
       startVelocity: 35,
       spread: 360,
