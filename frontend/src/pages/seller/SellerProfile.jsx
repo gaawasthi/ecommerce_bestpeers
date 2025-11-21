@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { userInfo, updateUser, changePassword, logoutApi } from '../../features/auth/authSlice'
 import SellerLayout from '../../components/layouts/SellerLayout'
-import React from 'react'
+
 
 const CustomerProfile = () => {
   const { user, isLoading } = useSelector((state) => state.auth)
