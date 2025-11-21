@@ -117,7 +117,6 @@ export const getSingleProduct = createAsyncThunk(
     }
   }
 );
-
 export const addProduct = createAsyncThunk(
   'products/addProduct',
   async (productData, { rejectWithValue }) => {
@@ -136,18 +135,22 @@ export const addProduct = createAsyncThunk(
         `${baseUrl}/api/products/create`,
         formData,
         {
+          withCredentials: true,
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-        },
-        { withCredentials: true }
+        }
       );
+
       return res.data.product;
     } catch (error) {
-      return rejectWithValue(getErrorMessage(error));
+      return rejectWithValue(
+        error.response?.data?.message || 'Error adding product'
+      );
     }
   }
 );
+
 
 export const updateProduct = createAsyncThunk(
   'products/updateProduct',
