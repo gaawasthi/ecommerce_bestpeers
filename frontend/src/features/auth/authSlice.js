@@ -69,20 +69,18 @@ export const login = createAsyncThunk(
     }
   }
 );
-
 export const logoutApi = createAsyncThunk(
-  'auth/logoutApi',
+  "auth/logoutApi",
   async (_, { rejectWithValue }) => {
     try {
-      await axios.post(`${baseUrl}/api/users/logout`, {}, { withCredentials: true });
+      await axios.post(
+        `${baseUrl}/api/users/logout`,
+        {},
+        { withCredentials: true }
+      );
 
-      localStorage.removeItem('user');
-
-      document.cookie.split(';').forEach((cookie) => {
-        document.cookie =
-          cookie.trim().split('=')[0] +
-          '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;';
-      });
+      // Remove stored user data
+      localStorage.removeItem("user");
 
       return true;
     } catch (err) {
@@ -90,6 +88,7 @@ export const logoutApi = createAsyncThunk(
     }
   }
 );
+
 
 export const resetPassword = createAsyncThunk(
   'auth/resetPassword',
