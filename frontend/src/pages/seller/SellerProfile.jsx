@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { userInfo, updateUser, changePassword } from '../../features/auth/authSlice'
+import { userInfo, updateUser, changePassword, logoutApi } from '../../features/auth/authSlice'
 import SellerLayout from '../../components/layouts/SellerLayout'
+import React from 'react'
 
 const CustomerProfile = () => {
   const { user, isLoading } = useSelector((state) => state.auth)
@@ -128,7 +129,12 @@ const CustomerProfile = () => {
       confirmPassword: '',
     })
   }
+   const handleLogout =()=>{
+         dispatch(logoutApi())
+         navigate('/login')
 
+
+  }
   if (isLoading && !user) {
     return <div className="h-screen flex items-center justify-center">Loading...</div>
   }
@@ -323,6 +329,11 @@ const CustomerProfile = () => {
           )}
         </div>
       </div>
+           <div className='flex flex-col justify-center items-center' >
+          <button onClick={handleLogout} className="bg-red-400 text-2xl text-amber-100 mt-5 w-100 h-10 rounded-xl hover:bg-red-600 ">
+            Logout
+          </button>
+        </div>
     </div>
     </SellerLayout>
   )
