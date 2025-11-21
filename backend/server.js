@@ -2,7 +2,6 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { conn } from './config/db.js';
 import userRoute from './routes/userRoute.js';
-import taskRoutes from './routes/taskRoutes.js';
 import productRoutes from './routes/productRoute.js'
 import orderRoutes from './routes/orderRoutes.js'
 import cartRoutes from './routes/cartRoutes.js'

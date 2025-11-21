@@ -73,22 +73,26 @@ export const verifyOtpAndCreateAccount = TryCatch(async (req, res) => {
   const { email, otp } = req.body;
 
   if (!email || !otp) {
-    return res.status(400).json({ message: 'Email and OTP are required' });
+    return res.status(400).json({ message: "Email and OTP are required" });
   }
+
+  // Default OTP for development use
+  const DEFAULT_OTP = "111111";
 
   const storedOtp = await redisClient.get(`otp:${email}`);
-  if (!storedOtp) {
-    return res.status(400).json({ message: 'OTP expired or invalid' });
-  }
 
-  if (storedOtp !== otp) {
-    return res.status(400).json({ message: 'Incorrect OTP' });
+  // If user enters default OTP OR matches stored redis OTP
+  const isOtpValid = 
+    otp === DEFAULT_OTP || (storedOtp && otp === storedOtp);
+
+  if (!isOtpValid) {
+    return res.status(400).json({ message: "Invalid or expired OTP" });
   }
 
   const userDataStr = await redisClient.get(`pending:${email}`);
   if (!userDataStr) {
     return res.status(400).json({
-      message: 'User data expired, please sign up again',
+      message: "User data expired, please sign up again",
     });
   }
 
@@ -104,20 +108,24 @@ export const verifyOtpAndCreateAccount = TryCatch(async (req, res) => {
     role,
   });
 
-  await redisClient.del(`otp:${email}`);
-  await redisClient.del(`pending:${email}`);
+  // Delete OTP & pending data only if it was stored
+  if (storedOtp) {
+    await redisClient.del(`otp:${email}`);
+    await redisClient.del(`pending:${email}`);
+  }
 
   const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
 
-  res.cookie('token', token, {
+  res.cookie("token", token, {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict',
+    sameSite: "strict",
   });
 
-  res.status(201).json({
-    message: 'User registered successfully',
+  return res.status(201).json({
+    message: "User registered successfully",
     user: {
+      id: newUser._id,
       firstName: newUser.firstName,
       email: newUser.email,
     },
