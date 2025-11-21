@@ -122,10 +122,17 @@ const Checkout = () => {
     };
     console.log(orderData);
     
-    dispatch(createOrder(orderData));
-    localStorage.removeItem('cart')
-    dispatch(emptyCart())
-    navigate("/order/summary")
+     dispatch(createOrder(orderData))
+  .unwrap()
+  .then(() => {
+    localStorage.removeItem('cart');
+    dispatch(emptyCart());
+    navigate("/order/summary");
+  })
+  .catch((error) => {
+    console.log("Order creation failed:", error);
+  });
+
       
    toast({
     message: " Order Placed Successfully",
