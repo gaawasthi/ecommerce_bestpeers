@@ -3,27 +3,50 @@ import useFormattedDate from '../../hooks/Date';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearLastOrder } from '../../features/order/orderSlice';
+import confetti from 'canvas-confetti';
 
 const OrderSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { createdOrder: lastOrder } = useSelector((state) => state.order);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+useEffect(() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // ❌ No order? Redirect automatically
-    if (!lastOrder) {
-      navigate('/');
+  if (!lastOrder) {
+    navigate('/');
+    return;
+  }
+
+
+  const duration = 2000;
+  const end = Date.now() + duration;
+
+  (function frame() {
+    confetti({
+      startVelocity: 35,
+      spread: 360,
+      ticks: 50,
+      particleCount: 40,
+      origin: {
+        x: Math.random(),
+        y: Math.random() - 0.2
+      }
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
     }
-  }, [lastOrder, navigate]);
+  })();
+}, [lastOrder, navigate]);
+
 
   if (!lastOrder) return null;
 
   const date = useFormattedDate(lastOrder?.createdAt);
 
   const handleGoHome = () => {
-    dispatch(clearLastOrder()); // clear localStorage + state
+    dispatch(clearLastOrder()); 
     navigate('/');
   };
 
