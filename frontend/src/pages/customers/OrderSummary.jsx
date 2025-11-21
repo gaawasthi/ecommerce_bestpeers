@@ -1,29 +1,36 @@
 import React, { useEffect } from 'react';
 import useFormattedDate from '../../hooks/Date';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearLastOrder } from '../../features/order/orderSlice';
 
 const OrderSummary = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { createdOrder: lastOrder } = useSelector((state) => state.order);
-  console.log(lastOrder);
-   const naviagate = useNavigate()
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
 
-  if (!lastOrder) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <h2 className="text-xl font-semibold">No order found</h2>
-      </div>
-    );
-  }
+    // ❌ No order? Redirect automatically
+    if (!lastOrder) {
+      navigate('/');
+    }
+  }, [lastOrder, navigate]);
+
+  if (!lastOrder) return null;
 
   const date = useFormattedDate(lastOrder?.createdAt);
+
+  const handleGoHome = () => {
+    dispatch(clearLastOrder()); // clear localStorage + state
+    navigate('/');
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-xl">
+        
         {/* Header */}
         <div className="bg-indigo-600 px-6 py-4">
           <div className="flex items-center justify-between gap-2">
@@ -102,46 +109,6 @@ const OrderSummary = () => {
             </div>
           </div>
 
-          {/* Order Items */}
-          {/* <div className="mt-8">
-            <h3 className="text-base font-medium text-slate-900 mb-6">
-              Order Items ({lastOrder?.items?.length || 0})
-            </h3>
-
-            <div className="space-y-4">
-              {lastOrder?.items?.map((item, index) => (
-                <div
-                  key={item?.product?._id || index}
-                  className="flex items-start gap-4 max-sm:flex-col"
-                >
-
-                  <img
-                    src={item?.product?.images?.[0]?.url || "/placeholder.png"}
-                    alt={item?.product?.name || "Product"}
-                    className="w-20 h-20 object-cover rounded-lg border"
-                  />
-
-                  <div className="flex-1">
-                    <h4 className="text-sm font-medium text-slate-900">
-                      {item?.product?.name}
-                    </h4>
-
-                    <p className="text-slate-500 text-xs font-medium mt-2">
-                      Qty: {item?.quantity}
-                    </p>
-                  </div>
-
-                  <div className="text-right">
-                    <p className="text-slate-900 text-sm font-semibold">
-                      ₹{item?.product?.price}
-                    </p>
-                  </div>
-
-                </div>
-              ))}
-            </div>
-          </div> */}
-
           {/* Price Summary */}
           <div className="bg-gray-100 rounded-xl p-4 mt-8">
             <h3 className="text-base font-medium text-slate-900 mb-6">
@@ -177,7 +144,7 @@ const OrderSummary = () => {
         <div className="bg-gray-100 px-6 py-4">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-slate-500 text-sm font-medium">
-              Need help?{' '}
+              Need help?{" "}
               <a href="#" className="text-indigo-700 hover:underline">
                 Contact us
               </a>
@@ -185,12 +152,13 @@ const OrderSummary = () => {
 
             <button
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-[15px] py-2 px-4 rounded-lg cursor-pointer transition duration-200"
-              onClick={() => naviagate('/')}
+              onClick={handleGoHome}
             >
               Go to home
             </button>
           </div>
         </div>
+
       </div>
     </div>
   );
