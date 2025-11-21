@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import SimpleParallax from "simple-parallax-js";
 
 const images = [
   "/banners/1338bd4fc60390d8.webp",
@@ -28,12 +29,15 @@ const AddBanners = () => {
       >
         {images.map((src, idx) => (
           <SwiperSlide key={idx} className="w-full h-full">
-            <img
+           <SimpleParallax>
+
+             <img
               src={src}
               alt={`Promotional Banner ${idx + 1}`}
               className="w-full h-full object-cover"
               loading="lazy"
             />
+           </SimpleParallax>
           </SwiperSlide>
         ))}
       </Swiper>

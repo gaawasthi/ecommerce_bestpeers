@@ -14,7 +14,7 @@ import { getSingleProduct } from '../../features/products/productSlice';
 import { addToCart } from '../../features/cart/cartSlice';
 import toast from 'not-a-toast';
 import 'not-a-toast/style.css';
-import SimpleParallax from 'simple-parallax-js';
+
 const ProductDetail = () => {
   const dispatch = useDispatch();
   const { product, isLoading, error } = useSelector((state) => state.product);
@@ -125,14 +125,11 @@ const ProductDetail = () => {
           {/* Image Section - Made more compact */}
           <div className="space-y-3">
             <div className="bg-white rounded-xl flex items-center justify-center overflow-hidden shadow-md aspect-square max-w-full mx-auto">
-             <SimpleParallax>
-     <img
+              <img
                 src={product.images?.[selectedImage]?.url}
                 alt={product.name}
                 className="w-full h-full object-contain p-2"
               />
-             </SimpleParallax>
-         
             </div>
             {product.images?.length > 1 && (
               <div className="grid grid-cols-4 gap-2 max-w-md mx-auto">
