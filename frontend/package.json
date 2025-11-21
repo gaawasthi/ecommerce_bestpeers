@@ -15,6 +15,7 @@
     "@reduxjs/toolkit": "^2.10.1",
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.2",
+    "canvas-confetti": "^1.9.4",
     "formik": "^2.4.9",
     "lucide-react": "^0.553.0",
     "not-a-toast": "^1.1.5",

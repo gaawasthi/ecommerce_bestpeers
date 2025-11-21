@@ -5,6 +5,7 @@ import { emptyCart } from '../../features/cart/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import toast from 'not-a-toast';
 import 'not-a-toast/style.css';
+import confetti from 'canvas-confetti';
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -98,44 +99,55 @@ const Checkout = () => {
   };
   console.log("cart" ,cartItems);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!validateForm()) {
-      alert('Please fill in all required fields');
-      return;
-    }
+  if (!validateForm()) {
+    alert('Please fill in all required fields');
+    return;
+  }
+
+  const orderData = {
+    items: cartItems.map((item) => ({
+      product: item.product._id,
+      quantity: item.quantity,
+    })),
+    address: formData.address,
+    paymentMethod: formData.paymentMethod,
+    itemsPrice,
+    taxPrice,
+    shippingPrice,
+    discount,
+    totalPrice,
+    orderStatus: 'pending',
+  };
+
+  dispatch(createOrder(orderData));
+  localStorage.removeItem("cart");
+  dispatch(emptyCart());
+
   
-    const orderData = {
-      items: cartItems.map((item) => ({
-        product: item.product._id,
-        quantity: item.quantity,
-      })),
-      address: formData.address,
-      paymentMethod: formData.paymentMethod,
-      itemsPrice: itemsPrice,
-      taxPrice: taxPrice,
-      shippingPrice: shippingPrice,
-      discount: discount,
-      totalPrice: totalPrice,
-      orderStatus: 'pending',
-    };
-    console.log(orderData);
-    
-    dispatch(createOrder(orderData));
-    localStorage.removeItem('cart')
-    dispatch(emptyCart())
-    navigate("/order/summary")
-      
-   toast({
-    message: " Order Placed Successfully",
+  confetti({
+    particleCount: 200,
+    spread: 70,
+    origin: { y: 0.6 }
+  });
+
+  toast({
+    message: "Order Placed Successfully 🎉",
     showIcon: true,
     iconAnimation: "default",
     iconTimingFunction: "ease",
     iconBorderRadius: "50%",
     iconType: "success",
-});
-  };
+  });
+
+  // slight delay to let users enjoy celebration ✨
+  setTimeout(() => {
+    navigate("/order/summary");
+  }, 1000);
+};
+
 
   return (
     <div className="bg-white">
