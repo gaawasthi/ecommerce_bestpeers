@@ -126,12 +126,15 @@ const Profile = () => {
     });
   };
 
-  const handleLogout =()=>{
-         dispatch(logoutApi())
-         navigate('/login')
-
-
-  }
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutApi()).unwrap();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      alert('Logout failed');
+    }
+  };
 
   if (isLoading && !user) {
     return (
