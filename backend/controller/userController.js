@@ -14,14 +14,11 @@ export const addSeller = TryCatch(async (req, res) => {
   if (existingUser) {
     return res.status(400).json({ message: 'User already registered' });
   }
-   const newUser = await User.create(userData)
-   return res.status(200).json(
-    {
-      message:"user created successfully" , 
-      newUser
-
-    }
-   )
+  const newUser = await User.create(userData);
+  return res.status(200).json({
+    message: 'user created successfully',
+    newUser,
+  });
 });
 
 // registration route
@@ -62,10 +59,10 @@ export const signUp = TryCatch(async (req, res) => {
   await sendMail({ email, subject, html });
 
   res.status(200).json({
-    message: 'OTP sent successfully to your email. Verify OTP to complete registration.'
+    message:
+      'OTP sent successfully to your email. Verify OTP to complete registration.',
   });
 });
-
 
 // verity otp
 //http://localhost:8000/api/users/verify
@@ -73,26 +70,25 @@ export const verifyOtpAndCreateAccount = TryCatch(async (req, res) => {
   const { email, otp } = req.body;
 
   if (!email || !otp) {
-    return res.status(400).json({ message: "Email and OTP are required" });
+    return res.status(400).json({ message: 'Email and OTP are required' });
   }
 
   // Default OTP for development use
-  const DEFAULT_OTP = "111111";
+  const DEFAULT_OTP = '111111';
 
   const storedOtp = await redisClient.get(`otp:${email}`);
 
   // If user enters default OTP OR matches stored redis OTP
-  const isOtpValid = 
-    otp === DEFAULT_OTP || (storedOtp && otp === storedOtp);
+  const isOtpValid = otp === DEFAULT_OTP || (storedOtp && otp === storedOtp);
 
   if (!isOtpValid) {
-    return res.status(400).json({ message: "Invalid or expired OTP" });
+    return res.status(400).json({ message: 'Invalid or expired OTP' });
   }
 
   const userDataStr = await redisClient.get(`pending:${email}`);
   if (!userDataStr) {
     return res.status(400).json({
-      message: "User data expired, please sign up again",
+      message: 'User data expired, please sign up again',
     });
   }
 
@@ -116,14 +112,15 @@ export const verifyOtpAndCreateAccount = TryCatch(async (req, res) => {
 
   const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
 
-  res.cookie("token", token, {
+  res.cookie('token', token, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: 'none',
+    path: '/',
   });
 
   return res.status(201).json({
-    message: "User registered successfully",
+    message: 'User registered successfully',
     user: {
       id: newUser._id,
       firstName: newUser.firstName,
